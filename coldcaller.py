@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 WOEID = "12758721" # http://developer.yahoo.com/geo/geoplanet/guide/concepts.html
 TO_EMAIL = "bcc-mr2@lists.bostoncoop.net"
 FROM_EMAIL = "c@tirl.org"
+ADMIN_EMAIL = "cfd@media.mit.edu"
 SUBJECT_PREFIX = "[pipe freeze]"
 SERVER = "localhost"
 
@@ -65,7 +66,7 @@ Weather Robot
         'temp': temp, 
         'units': UNITS.upper(), 
         'url': url,
-        'maintainer': FROM_EMAIL}
+        'maintainer': ADMIN_EMAIL}
     send_email(message, "Cold weather warning!")
 
 def send_all_clear(url):
@@ -79,7 +80,7 @@ Sincerely,
 Weather Robot
 
 (This message automatically generated.  Send complaints to %(maintainer)s)
-""" % {'temp': WARNING_THRESHOLD, 'units': UNITS.upper(), 'url': url, 'maintainer': FROM_EMAIL }
+""" % {'temp': WARNING_THRESHOLD, 'units': UNITS.upper(), 'url': url, 'maintainer': ADMIN_EMAIL }
     send_email(message, "Warmer weather on the way")
 
 def send_email(message, subject):
@@ -91,5 +92,21 @@ def send_email(message, subject):
     s.sendmail(FROM_EMAIL, [TO_EMAIL], msg.as_string())
     s.quit()
 
+def send_error_report(message):
+    msg = MIMEText("""%s
+
+(Automatically generated error report for coldcaller.py script)""" % message)
+    msg['Subject'] = "%s %s" % (SUBJECT_PREFIX, "ERROR")
+    msg['From'] = FROM_EMAIL
+    msg['To'] = ADMIN_EMAIL
+    s = smtplib.SMTP(SERVER)
+    s.sendmail(FROM_EMAIL, [ADMIN_EMAIL], msg.as_string())
+    s.quit()
+
 if __name__ == "__main__":
-    check_forecast_and_warn()
+    try:
+        check_forecast_and_warn()
+    except Exception as e:
+        send_error_report(str(e))
+
+
