@@ -5,8 +5,8 @@ import smtplib
 from email.mime.text import MIMEText
 
 WOEID = "12758721" # http://developer.yahoo.com/geo/geoplanet/guide/concepts.html
-TO_EMAIL = "cfd@media.mit.edu"
-FROM_EMAIL = "bcc-mr2@lists.bostoncoop.net"
+TO_EMAIL = "bcc-mr2@lists.bostoncoop.net"
+FROM_EMAIL = "c@tirl.org"
 SUBJECT_PREFIX = "[pipe freeze]"
 SERVER = "localhost"
 
